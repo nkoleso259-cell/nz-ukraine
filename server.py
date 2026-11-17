@@ -11,11 +11,11 @@ def cors(r):
     r.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
     return r
 
-@app.route("/")
+@app.route(chr(47))
 def home_page():
     return jsonify({"status": "NZ_UKRAINE RENDER OK"})
 
-@app.route("/api/login", methods=["POST", "OPTIONS"])
+@app.route(chr(47) + "api" + chr(47) + "login", methods=["POST", "OPTIONS"])
 def login_nz():
     if request.method == "OPTIONS":
         return jsonify({"ok": True})
@@ -26,13 +26,18 @@ def login_nz():
         return jsonify({"ok": False, "error": "Введи логін і пароль"})
 
     s = requests.Session()
-    s.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"})
-    base = "https:" + "//nz.ua"
+    s.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+        "Origin": "https:" + chr(47) + chr(47) + "nz.ua",
+        "Referer": "https:" + chr(47) + chr(47) + "nz.ua" + chr(47)
+    })
+    sl = chr(47)
+    base = "https:" + sl + sl + "nz.ua"
     try:
-        page = s.get(base + "/", timeout=15).text
+        page = s.get(base + sl, timeout=15).text
         m = re.search(r'name="_csrf" value="([^"]+)"', page)
         csrf = m.group(1) if m else ""
-        res = s.post(base + "/login", data={
+        res = s.post(base + sl + "login", data={
             "_csrf": csrf,
             "LoginForm[login]": u,
             "LoginForm[password]": p,
@@ -42,11 +47,8 @@ def login_nz():
         if res.strip() != "[]":
             return jsonify({"ok": False, "error": "Невірний логін або пароль NZ.UA"})
 
-        sched = s.get(base + "/schedule/index", timeout=15).text
-        diary = s.get(base + "/schedule/diary", timeout=15).text
-
-        if "Увійти до кабінету" in sched:
-            return jsonify({"ok": False, "error": "Сесія NZ.UA не відкрилася"})
+        sched = s.get(base + sl + "schedule" + sl + "index", timeout=15).text
+        diary = s.get(base + sl + "schedule" + sl + "diary", timeout=15).text
 
         name_m = re.search(r'([А-ЯІЇЄҐ][а-яіїєґ\']+\s+[А-ЯІЇЄҐ][а-яіїєґ\']+\s+[А-ЯІЇЄҐ][а-яіїєґ\']+)', sched)
         full_name = name_m.group(1) if name_m else u
@@ -62,4 +64,4 @@ def login_nz():
 
         return jsonify({"ok": True, "name": full_name, "avg": avg, "lessons": lessons[:8]})
     except Exception as e:
-        return jsonify({"ok": False, "error": "Помилка: " + str(e)})
+        return jsonify({"ok": False, "error": "Помилка сервера: " + str(e)})
