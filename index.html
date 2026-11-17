@@ -5,179 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NZ_Ukraine</title>
 <script src="https://telegram.org"></script>
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
-  :root { --bg: #040711; --card: rgba(11, 18, 36, 0.88); --neon: #38bdf8; --glow: rgba(56, 189, 248, 0.35); --border: rgba(56, 189, 248, 0.25); }
-  body.vip { --bg: #08040d; --card: rgba(24, 10, 22, 0.88); --neon: #ff2a5f; --glow: rgba(255, 42, 95, 0.45); --border: rgba(255, 42, 95, 0.38); }
-  * { box-sizing: border-box; font-weight: 800 !important; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 14px; padding-bottom: 90px; min-height: 100vh; transition: 0.3s; }
-  body.vip { background: radial-gradient(circle at top right, rgba(255,42,95,0.22), #050814 60%); }
-  #splash { position: fixed; inset: 0; background: #040711; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
-  .nz-logo { width: 84px; height: 84px; border-radius: 24px; border: 2px solid #ff2a5f; box-shadow: 0 0 28px rgba(255,42,95,0.6), inset 0 0 14px rgba(56,189,248,0.5); display: flex; align-items: center; justify-content: center; font-size: 34px; color: #fff; text-shadow: 0 0 12px #38bdf8; }
-  .ios-widget { background: var(--card); border: 1.5px solid var(--border); border-radius: 24px; padding: 16px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); backdrop-filter: blur(12px); }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .score-box { position: relative; height: 155px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .score-num { position: relative; z-index: 3; font-size: 50px; color: #fff; text-shadow: 0 0 18px var(--neon), 0 0 35px var(--neon); }
-  body:not(.vip) .score-num { animation: lampFlicker 3.5s infinite; }
-  @keyframes lampFlicker { 0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; } 20%,24%,55% { opacity: 0.45; } }
-  .water { display: none; position: absolute; bottom: -10px; left: -15%; right: -15%; height: 78%; background: linear-gradient(180deg, #ff2a5f 0%, #1d4ed8 100%); z-index: 1; transition: transform 0.15s ease-out; border-radius: 38% 42% 0 0; }
-  body.vip .water { display: block; animation: waveIdle 5s ease-in-out infinite alternate; }
-  @keyframes waveIdle { 0% { transform: rotate(-2deg) translateY(0); } 100% { transform: rotate(2deg) translateY(-5px); } }
-  .neon-ico { width: 22px; height: 22px; stroke: var(--neon); filter: drop-shadow(0 0 6px var(--neon)); fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  :root { --bg: #040711; --card: #0c1428; --neon: #38bdf8; --glow: rgba(56,189,248,0.45); --border: rgba(56,189,248,0.35); }
+  body.vip { --bg: #07030a; --card: #170b1a; --neon: #ff2a5f; --glow: rgba(255,42,95,0.55); --border: rgba(255,42,95,0.48); }
+  * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-weight: 900; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: #fff; margin: 0; padding: 14px; padding-bottom: 105px; min-height: 100vh; }
+  #splash { position: fixed; inset: 0; background: #040711; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .nz-logo { width: 92px; height: 92px; border-radius: 28px; border: 3px solid #ff2a5f; box-shadow: 0 0 30px rgba(255,42,95,0.7); display: flex; align-items: center; justify-content: center; font-family: 'Unbounded', sans-serif; font-size: 34px; }
+  .widget { background: var(--card); border: 2.5px solid var(--border); border-radius: 28px; padding: 20px; margin-bottom: 14px; position: relative; overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.12); }
+  .score-card { height: 215px; display: flex; flex-direction: column; justify-content: space-between; }
+  .score-label { position: relative; z-index: 3; font-size: 13px; letter-spacing: 0.8px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+  .score-wrap { position: relative; z-index: 3; display: flex; align-items: baseline; gap: 8px; }
+  body:not(.vip) .score-wrap { justify-content: center; margin: auto 0; animation: badLamp 4s infinite; }
+  @keyframes badLamp { 0%,18%,20%,22%,60%,62%,100% { opacity: 1; text-shadow: 0 0 26px #38bdf8; } 19%,21%,61% { opacity: 0.25; text-shadow: none; } }
+  .big-num { font-family: 'Unbounded', sans-serif; font-size: 64px; line-height: 1; letter-spacing: -2px; }
+  .sub-num { font-size: 20px; color: rgba(255,255,255,0.75); }
+  .water { display: none; position: absolute; bottom: -15px; left: -20%; right: -20%; height: 76%; background: linear-gradient(180deg, #ff2a5f 0%, #1d4ed8 100%); z-index: 1; border-radius: 40% 45% 0 0; transition: transform 0.15s ease-out; }
+  body.vip .water { display: block; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .mini-btn { background: var(--card); border: 2.5px solid var(--border); border-radius: 24px; padding: 20px 8px; text-align: center; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.45), inset 0 1.5px 0 rgba(255,255,255,0.1); cursor: pointer; }
+  .neon-ico { width: 28px; height: 28px; stroke: var(--neon); filter: drop-shadow(0 0 8px var(--neon)); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .blur-lock { filter: blur(5px); opacity: 0.45; pointer-events: none; user-select: none; }
+  body.vip .blur-lock { filter: none; opacity: 1; pointer-events: auto; }
+  .lock-badge { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 5; }
+  body.vip .lock-badge { display: none; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 13px 0; border-bottom: 1.5px solid rgba(255,255,255,0.08); font-size: 15px; }
   .row:last-child { border: none; padding-bottom: 0; }
-  .btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--neon), #1d4ed8); border: none; border-radius: 16px; color: #fff; font-size: 15px; box-shadow: 0 0 18px var(--glow); cursor: pointer; }
-  input { width: 100%; padding: 13px; margin: 6px 0 12px 0; background: #070c1d; border: 1.5px solid var(--border); border-radius: 14px; color: #fff; font-size: 15px; }
-  .nav { position: fixed; bottom: 12px; left: 12px; right: 12px; background: rgba(7, 11, 24, 0.96); border: 1.5px solid var(--border); border-radius: 26px; display: flex; justify-content: space-around; padding: 9px 4px; z-index: 50; }
-  .nav button { background: none; border: none; color: #64748b; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
-  .nav button.active { color: var(--neon); text-shadow: 0 0 10px var(--glow); }
+  .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--neon), #1d4ed8); border: none; border-radius: 18px; color: #fff; font-size: 15px; box-shadow: 0 0 20px var(--glow); cursor: pointer; }
+  input { width: 100%; padding: 15px; margin: 6px 0 14px 0; background: #070b18; border: 2px solid var(--border); border-radius: 16px; color: #fff; font-size: 16px; }
+  .nav { position: fixed; bottom: 14px; left: 14px; right: 14px; background: rgba(10,15,28,0.94); backdrop-filter: blur(18px); border: 2.5px solid var(--border); border-radius: 30px; display: flex; justify-content: space-around; padding: 10px 6px; z-index: 50; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+  .nav button { background: none; border: none; color: #64748b; width: 52px; height: 46px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .nav button.active { background: rgba(255,255,255,0.1); color: var(--neon); }
   .tab { display: none; } .tab.active { display: block; }
   .cloud-wave { animation: waveHand 2s infinite ease-in-out; transform-origin: bottom center; }
   @keyframes waveHand { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 </style>
 </head>
 <body>
-<div id="splash">
-  <div class="nz-logo">NZ</div>
-  <div style="margin-top:14px; font-size:20px; letter-spacing:1px;">NZ_UKRAINE</div>
-</div>
+<div id="splash"><div class="nz-logo">NZ</div><div style="margin-top:16px; font-family:'Unbounded',sans-serif; font-size:20px;">NZ_UKRAINE</div></div>
 
-<div id="login-box" style="padding-top:40px;">
-  <div class="nz-logo" style="width:64px; height:64px; font-size:26px; margin-bottom:16px;">NZ</div>
-  <h1 style="margin:0 0 6px 0; font-size:26px;">ВХІД У NZ.UA</h1>
-  <div class="ios-widget">
-    <div style="font-size:11px; color:#94a3b8;">ЛОГІН ШКОЛЯРА</div>
+<div id="login-box" style="padding-top:35px;">
+  <div class="nz-logo" style="width:72px; height:72px; font-size:28px; margin-bottom:18px;">NZ</div>
+  <h1 style="margin:0 0 12px 0; font-family:'Unbounded',sans-serif; font-size:24px;">ВХІД У NZ.UA</h1>
+  <div class="widget">
+    <div style="font-size:12px; color:#94a3b8;">ЛОГІН ШКОЛЯРА</div>
     <input type="text" id="l-inp" placeholder="Введи логін">
-    <div style="font-size:11px; color:#94a3b8;">ПАРОЛЬ</div>
+    <div style="font-size:12px; color:#94a3b8;">ПАРОЛЬ</div>
     <input type="password" id="p-inp" placeholder="••••••••">
-    <button class="btn" onclick="doLogin()">УВІЙТИ В СИСТЕМУ</button>
+    <button class="btn" onclick="doLogin()">УВІЙТИ В ЩОДЕННИК</button>
   </div>
 </div>
 
 <div id="app-box" style="display:none;">
   <div id="t-home" class="tab active">
-    <div style="margin-bottom:14px;">
-      <div id="hello" style="font-size:26px; line-height:1.15;">Привіт, Учень!</div>
-      <div id="dt" style="font-size:13px; color:var(--neon); margin-top:4px;">Сьогодні: 17 листопада 2026</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <div id="hello" style="font-size:26px; line-height:1.15;">Привіт, Учень!</div>
+        <div id="dt" style="font-size:13px; color:#94a3b8; margin-top:4px;">Сьогодні: 17 листопада 2026</div>
+      </div>
+      <div id="top-badge" style="width:48px; height:48px; border-radius:50%; background:rgba(56,189,248,0.15); border:2.5px solid var(--neon); display:flex; align-items:center; justify-content:center; font-size:16px;">NZ</div>
     </div>
 
-    <div class="ios-widget score-box" onclick="splashWater()">
-      <div style="position:relative; z-index:3; font-size:11px; letter-spacing:1px; color:#cbd5e1;">СЕРЕДНЯ ОЦІНКА</div>
-      <div class="score-num" id="main-avg">9.14</div>
+    <div class="widget score-card" onclick="splashWater()">
+      <div class="score-label"><span class="dot"></span>СЕРЕДНІЙ БАЛ</div>
+      <div class="score-wrap"><span class="big-num">9.14</span><span class="sub-num">/ 12</span></div>
       <div class="water" id="water-wave"></div>
     </div>
 
-    <div class="grid-2">
-      <div class="ios-widget" style="margin:0;" onclick="go('t-sched', document.getElementById('b-sched'))">
+    <div class="grid-3">
+      <div class="mini-btn" onclick="go('t-sched', document.getElementById('b-sched'))">
         <svg class="neon-ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="4"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <div style="font-size:13px; margin-top:8px;">РОЗКЛАД</div>
-        <div style="font-size:11px; color:#94a3b8;">Уроки та бали</div>
+        <span>Розклад</span>
       </div>
-      <div class="ios-widget" style="margin:0;" onclick="go('t-hw', document.getElementById('b-hw'))">
+      <div class="mini-btn" onclick="go('t-hw', document.getElementById('b-hw'))">
         <svg class="neon-ico" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        <div style="font-size:13px; margin-top:8px;">ЗАВДАННЯ</div>
-        <div style="font-size:11px; color:#94a3b8;">ДЗ на завтра</div>
+        <span>ДЗ</span>
+      </div>
+      <div class="mini-btn" onclick="go('t-sched', document.getElementById('b-sched'))">
+        <svg class="neon-ico" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+        <span>Табель</span>
       </div>
     </div>
 
-    <div class="ios-widget">
-      <div style="font-size:12px; color:var(--neon); margin-bottom:8px;">НОВОСТІ, ОЦІНКИ ТА Н-КИ</div>
-      <div class="row"><span>Останні оцінки</span><span style="color:var(--neon);">Очікує NZ.UA</span></div>
-      <div class="row"><span>Пропуски (Н-ки)</span><span>0 уроків</span></div>
-      <div class="row"><span>Новини класу</span><span style="color:#94a3b8;">Реліз у Пт–Сб</span></div>
+    <div class="widget" onclick="if(!document.body.classList.contains('vip')) buyVip()">
+      <div class="lock-badge"><div style="background:#ff2a5f; padding:10px 18px; border-radius:16px; font-size:13px; box-shadow:0 0 20px #ff2a5f;">VIP АНАЛІТИКА • 15 ⭐️</div></div>
+      <div class="blur-lock">
+        <div style="font-size:11px; color:var(--neon); margin-bottom:6px;">АНАЛІТИКА ТА НОВОСТІ</div>
+        <div style="font-size:18px; margin-bottom:10px;">Розширений зріз успішності</div>
+        <div class="row"><span>Пропуски (Н-ки)</span><span style="color:var(--neon);">2 дні (11 уроків)</span></div>
+        <div class="row"><span>Прогноз балу</span><span style="color:var(--neon);">9.45</span></div>
+      </div>
     </div>
 
-    <div class="ios-widget" style="padding:12px 16px; display:flex; align-items:center; gap:10px;">
-      <svg class="neon-ico" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1M2 21h20M7 8v3M12 8v3M17 8v3M7 4h.01M12 4h.01M17 4h.01"/></svg>
-      <div style="font-size:11px; color:#cbd5e1;">ДНІ НАРОДЖЕННЯ: <span style="color:var(--neon);">Синхронізація з класом NZ</span></div>
+    <div class="widget" style="padding:14px 18px; display:flex; align-items:center; gap:12px;">
+      <svg class="neon-ico" style="width:24px; height:24px;" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8M2 21h20M7 8v3M12 8v3M17 8v3"/></svg>
+      <div style="font-size:12px; color:#cbd5e1;">ДНІ НАРОДЖЕННЯ: <span style="color:var(--neon);">Синхронізація з класом NZ</span></div>
     </div>
   </div>
 <div id="t-hw" class="tab">
-    <h2 style="margin:0 0 10px 0; font-size:20px;">ДОМАШНЄ ЗАВДАННЯ ДЛЯ:<br><span id="hw-dates" style="color:var(--neon);">18.11.26 - 19.11.26</span></h2>
-    <div class="ios-widget">
-      <div class="row"><div><div>Алгебра</div><div style="font-size:12px; color:#94a3b8;">Завдання завантажиться з NZ.UA</div></div><input type="checkbox" style="width:20px; height:20px; margin:0;"></div>
-      <div class="row"><div><div>Українська мова</div><div style="font-size:12px; color:#94a3b8;">Завдання завантажиться з NZ.UA</div></div><input type="checkbox" style="width:20px; height:20px; margin:0;"></div>
-      <div class="row"><div><div>Хімія</div><div style="font-size:12px; color:#94a3b8;">Завдання завантажиться з NZ.UA</div></div><input type="checkbox" style="width:20px; height:20px; margin:0;"></div>
+    <h2 style="margin:0 0 12px 0; font-size:20px;">ДОМАШНЄ ЗАВДАННЯ ДЛЯ:<br><span style="color:var(--neon);">18.11.26 - 19.11.26</span></h2>
+    <div class="widget">
+      <div class="row"><div><div>Алгебра</div><div style="font-size:12px; color:#94a3b8;">Очікує синхронізації з NZ.UA</div></div><input type="checkbox" style="width:22px; height:22px; margin:0;"></div>
+      <div class="row"><div><div>Українська мова</div><div style="font-size:12px; color:#94a3b8;">Очікує синхронізації з NZ.UA</div></div><input type="checkbox" style="width:22px; height:22px; margin:0;"></div>
+      <div class="row"><div><div>Хімія</div><div style="font-size:12px; color:#94a3b8;">Очікує синхронізації з NZ.UA</div></div><input type="checkbox" style="width:22px; height:22px; margin:0;"></div>
     </div>
   </div>
 
   <div id="t-sched" class="tab">
-    <h2 style="margin:0 0 12px 0;">РОЗКЛАД ТА БАЛИ</h2>
-    <div class="ios-widget">
+    <h2 style="margin:0 0 12px 0; font-size:22px;">РОЗКЛАД ТА ОЦІНКИ</h2>
+    <div class="widget">
       <div class="row">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
           <svg class="neon-ico" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/></svg>
           <div><div>Алгебра</div><div style="font-size:11px; color:#94a3b8;">1 урок • 08:30</div></div>
         </div>
-        <div style="color:var(--neon); font-size:18px;">9</div>
+        <div style="color:var(--neon); font-size:20px;">9</div>
       </div>
       <div class="row">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
           <svg class="neon-ico" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
           <div><div>Українська мова</div><div style="font-size:11px; color:#94a3b8;">2 урок • 09:25</div></div>
         </div>
-        <div style="color:var(--neon); font-size:18px;">10</div>
+        <div style="color:var(--neon); font-size:20px;">10</div>
       </div>
       <div class="row">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
           <svg class="neon-ico" viewBox="0 0 24 24"><path d="M9 3h6M10 3v5l-4.5 8.5A2 2 0 0 0 7.2 19h9.6a2 2 0 0 0 1.7-2.5L14 8V3"/></svg>
           <div><div>Хімія</div><div style="font-size:11px; color:#94a3b8;">3 урок • 10:25</div></div>
         </div>
-        <div style="color:var(--neon); font-size:18px;">8</div>
+        <div style="color:var(--neon); font-size:20px;">8</div>
       </div>
     </div>
   </div>
 
   <div id="t-ai" class="tab">
-    <h2 style="margin:0 0 12px 0;">ШІ РЕЖИМ</h2>
-    <div class="ios-widget" style="text-align:center; padding:32px 16px;">
-      <svg class="cloud-wave" style="width:92px; height:92px; stroke:var(--neon); filter:drop-shadow(0 0 12px var(--neon)); fill:none; stroke-width:2;" viewBox="0 0 24 24">
+    <h2 style="margin:0 0 12px 0; font-size:22px;">ШІ РЕЖИМ</h2>
+    <div class="widget" style="text-align:center; padding:34px 18px;">
+      <svg class="cloud-wave" style="width:96px; height:96px; stroke:var(--neon); filter:drop-shadow(0 0 14px var(--neon)); fill:none; stroke-width:2.3;" viewBox="0 0 24 24">
         <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-        <circle cx="10" cy="13" r="0.8" fill="#fff"/><circle cx="14" cy="13" r="0.8" fill="#fff"/>
+        <circle cx="10" cy="13" r="0.9" fill="#fff"/><circle cx="14" cy="13" r="0.9" fill="#fff"/>
         <path d="M10.5 15.5c1 1 2 1 3 0"/><path d="M20 11c1.5-1 2.5-2 2-3.5"/>
       </svg>
-      <div style="font-size:16px; line-height:1.4; margin:14px 0;">Привіт, ШІ в розробці, дочекайся нових новин в нашому тгк <span style="color:var(--neon);">@nzchatuk</span></div>
+      <div style="font-size:16px; line-height:1.45; margin:16px 0;">Привіт, ШІ в розробці, дочекайся нових новин в нашому тгк <span style="color:var(--neon);">@nzchatuk</span></div>
       <button class="btn" onclick="openLink('https://t.me')">ПЕРЕЙТИ В @NZCHATUK</button>
     </div>
   </div>
-<div id="t-prof" class="tab">
-    <h2 style="margin:0 0 12px 0;">ПРОФІЛЬ</h2>
-    <div class="ios-widget" style="display:flex; align-items:center; gap:14px;">
+
+  <div id="t-prof" class="tab">
+    <h2 style="margin:0 0 12px 0; font-size:22px;">ПРОФІЛЬ</h2>
+    <div class="widget" style="display:flex; align-items:center; gap:16px;">
       <div style="position:relative;">
-        <img id="tg-ava" src="https://ui-avatars.com" style="width:62px; height:62px; border-radius:50%; border:2px solid var(--neon);">
-        <svg id="vip-crown" style="display:none; position:absolute; top:-16px; left:17px; width:28px; height:28px; stroke:#ff2a5f; fill:#ff2a5f; filter:drop-shadow(0 0 8px #ff2a5f);" viewBox="0 0 24 24"><path d="M2 17l2-11 5 4 3-6 3 6 5-4 2 11H2zm2 2h16v2H4v-2z"/></svg>
+        <img id="tg-ava" src="https://ui-avatars.com" style="width:68px; height:68px; border-radius:50%; border:2.5px solid var(--neon);">
+        <svg id="vip-crown" style="display:none; position:absolute; top:-18px; left:19px; width:30px; height:30px; stroke:#ff2a5f; fill:#ff2a5f; filter:drop-shadow(0 0 8px #ff2a5f);" viewBox="0 0 24 24"><path d="M2 17l2-11 5 4 3-6 3 6 5-4 2 11H2zm2 2h16v2H4v-2z"/></svg>
       </div>
       <div>
-        <div id="p-name" style="font-size:18px;">Учень NZ</div>
-        <div id="p-status" style="font-size:12px; color:var(--neon);">СТАТУС: ЗВИЧАЙНИЙ</div>
+        <div id="p-name" style="font-size:19px;">Учень NZ</div>
+        <div id="p-status" style="font-size:12px; color:var(--neon); margin-top:4px;">СТАТУС: ЗВИЧАЙНИЙ</div>
       </div>
     </div>
 
-    <div class="ios-widget" id="vip-buy-card" onclick="buyVip()" style="border-color:#ff2a5f; box-shadow:0 0 16px rgba(255,42,95,0.25); cursor:pointer;">
+    <div class="widget" id="vip-buy-card" onclick="buyVip()" style="border-color:#ff2a5f; box-shadow:0 0 20px rgba(255,42,95,0.3); cursor:pointer;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
           <div style="color:#ff2a5f; font-size:15px;">АКТИВУВАТИ VIP-ДИЗАЙН</div>
-          <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">Жива вода, неон, корона та звуки</div>
+          <div style="font-size:11px; color:#cbd5e1; margin-top:3px;">Жива вода, гул неону та корона</div>
         </div>
-        <div style="background:#ff2a5f; padding:8px 12px; border-radius:12px; font-size:14px;">15 ⭐️</div>
+        <div style="background:#ff2a5f; padding:10px 14px; border-radius:14px; font-size:14px;">15 ⭐️</div>
       </div>
     </div>
 
-    <div class="ios-widget" style="padding:6px 16px;">
+    <div class="widget" style="padding:8px 20px;">
       <div class="row" onclick="openLink('https://t.me')" style="cursor:pointer;"><span>Підтримка (@Modestyzz)</span><span style="color:var(--neon);">→</span></div>
       <div class="row" onclick="openLink('https://t.me')" style="cursor:pointer;"><span>Наший телеграм (@nzchatuk)</span><span style="color:var(--neon);">→</span></div>
       <div class="row" onclick="alert('© 2026 NZ_Ukraine • @nzbestinuabot. Усі права захищено. Автор: @Modestyzz')" style="cursor:pointer;"><span>Авторське право</span><span style="color:var(--neon);">©</span></div>
       <div class="row" onclick="doLogout()" style="cursor:pointer; color:#ff2a5f;"><span>Вийти з акаунта</span><span>✕</span></div>
     </div>
   </div>
-
-  <div class="nav">
-    <button class="active" id="b-home" onclick="go('t-home', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Головна</button>
-    <button id="b-hw" onclick="go('t-hw', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>ДЗ</button>
-    <button id="b-sched" onclick="go('t-sched', this)"><svg class="neon-ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="4"/><path d="M3 10h18"/></svg>Розклад</button>
-    <button id="b-ai" onclick="go('t-ai', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>ШІ</button>
-    <button id="b-prof" onclick="go('t-prof', this)"><svg class="neon-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>Профіль</button>
+<div class="nav">
+    <button class="active" id="b-home" onclick="go('t-home', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
+    <button id="b-hw" onclick="go('t-hw', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+    <button id="b-sched" onclick="go('t-sched', this)"><svg class="neon-ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="4"/><path d="M3 10h18"/></svg></button>
+    <button id="b-ai" onclick="go('t-ai', this)"><svg class="neon-ico" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></button>
+    <button id="b-prof" onclick="go('t-prof', this)"><svg class="neon-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></button>
   </div>
 </div>
+
 <script>
   var tg = window.Telegram ? window.Telegram.WebApp : null;
   if (tg) { tg.expand(); tg.ready(); }
@@ -185,22 +199,39 @@
   setTimeout(function() {
     var sp = document.getElementById('splash');
     if (sp) sp.style.display = 'none';
-  }, 1100);
+  }, 1000);
 
-  function playBeep(vipMode) {
+  function playSound(isVip) {
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
       var osc = ctx.createOscillator();
       var gain = ctx.createGain();
-      osc.type = vipMode ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(vipMode ? 520 : 340, ctx.currentTime);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.09);
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(vipMode ? 'medium' : 'light');
+      if (isVip) {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(65, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(110, ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.14, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.28);
+      } else {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(950, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.09, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.06);
+      }
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(isVip ? 'heavy' : 'light');
     } catch(e) {}
   }
+
+  setInterval(function() {
+    if (!document.body.classList.contains('vip') && document.getElementById('app-box').style.display === 'block') {
+      playSound(false);
+    }
+  }, 4000);
 
   window.onload = function() {
     var months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
@@ -213,7 +244,7 @@
   };
 
   function doLogin() {
-    playBeep(document.body.classList.contains('vip'));
+    playSound(document.body.classList.contains('vip'));
     var l = document.getElementById('l-inp').value.trim();
     var p = document.getElementById('p-inp').value.trim();
     if (!l || !p) { alert('Введи логін і пароль!'); return; }
@@ -232,6 +263,7 @@
     }
     document.getElementById('hello').innerText = 'Привіт, ' + name + '!';
     document.getElementById('p-name').innerText = name;
+    document.getElementById('top-badge').innerText = name.substring(0, 2).toUpperCase();
   }
 
   function setVipUI(active) {
@@ -249,7 +281,7 @@
   }
 
   function buyVip() {
-    playBeep(true);
+    playSound(true);
     if (confirm('Оплатити 15 зірок Telegram Stars для активації VIP-дизайну?')) {
       localStorage.setItem('nz_vip', '1');
       setVipUI(true);
@@ -257,10 +289,11 @@
   }
 
   function splashWater() {
-    if (!document.body.classList.contains('vip')) return;
-    playBeep(true);
+    var isVip = document.body.classList.contains('vip');
+    playSound(isVip);
+    if (!isVip) return;
     var w = document.getElementById('water-wave');
-    w.style.transform = 'rotate(6deg) scaleY(1.1)';
+    w.style.transform = 'rotate(6deg) scaleY(1.12)';
     setTimeout(function() { w.style.transform = ''; }, 300);
   }
 
@@ -271,7 +304,7 @@
   });
 
   function go(id, btn) {
-    playBeep(document.body.classList.contains('vip'));
+    playSound(document.body.classList.contains('vip'));
     document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
     document.querySelectorAll('.nav button').forEach(function(x) { x.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
@@ -279,7 +312,7 @@
   }
 
   function openLink(url) {
-    playBeep(document.body.classList.contains('vip'));
+    playSound(document.body.classList.contains('vip'));
     if (tg) tg.openTelegramLink(url); else window.open(url, '_blank');
   }
 
