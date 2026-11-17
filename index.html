@@ -104,7 +104,8 @@
       <div style="font-size:12px; color:#cbd5e1;">ДНІ НАРОДЖЕННЯ: <span style="color:var(--neon);">Синхронізація з класом NZ</span></div>
     </div>
   </div>
-<div id="t-hw" class="tab">
+
+  <div id="t-hw" class="tab">
     <h2 style="margin:0 0 12px 0; font-size:20px;">ДОМАШНЄ ЗАВДАННЯ ДЛЯ:<br><span style="color:var(--neon);">18.11.26 - 19.11.26</span></h2>
     <div class="widget">
       <div class="row"><div><div>Алгебра</div><div style="font-size:12px; color:#94a3b8;">Очікує синхронізації з NZ.UA</div></div><input type="checkbox" style="width:22px; height:22px; margin:0;"></div>
@@ -116,27 +117,9 @@
   <div id="t-sched" class="tab">
     <h2 style="margin:0 0 12px 0; font-size:22px;">РОЗКЛАД ТА ОЦІНКИ</h2>
     <div class="widget">
-      <div class="row">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <svg class="neon-ico" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/></svg>
-          <div><div>Алгебра</div><div style="font-size:11px; color:#94a3b8;">1 урок • 08:30</div></div>
-        </div>
-        <div style="color:var(--neon); font-size:20px;">9</div>
-      </div>
-      <div class="row">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <svg class="neon-ico" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg>
-          <div><div>Українська мова</div><div style="font-size:11px; color:#94a3b8;">2 урок • 09:25</div></div>
-        </div>
-        <div style="color:var(--neon); font-size:20px;">10</div>
-      </div>
-      <div class="row">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <svg class="neon-ico" viewBox="0 0 24 24"><path d="M9 3h6M10 3v5l-4.5 8.5A2 2 0 0 0 7.2 19h9.6a2 2 0 0 0 1.7-2.5L14 8V3"/></svg>
-          <div><div>Хімія</div><div style="font-size:11px; color:#94a3b8;">3 урок • 10:25</div></div>
-        </div>
-        <div style="color:var(--neon); font-size:20px;">8</div>
-      </div>
+      <div class="row"><div><div>Алгебра</div><div style="font-size:11px; color:#94a3b8;">1 урок • 08:30</div></div><div style="color:var(--neon); font-size:20px;">9</div></div>
+      <div class="row"><div><div>Українська мова</div><div style="font-size:11px; color:#94a3b8;">2 урок • 09:25</div></div><div style="color:var(--neon); font-size:20px;">10</div></div>
+      <div class="row"><div><div>Хімія</div><div style="font-size:11px; color:#94a3b8;">3 урок • 10:25</div></div><div style="color:var(--neon); font-size:20px;">8</div></div>
     </div>
   </div>
 
@@ -178,8 +161,7 @@
 
     <div class="widget" style="padding:8px 20px;">
       <div class="row" onclick="openLink('https://t.me')" style="cursor:pointer;"><span>Підтримка (@Modestyzz)</span><span style="color:var(--neon);">→</span></div>
-      <div class="row" onclick="openLink('https://t.me')" style="cursor:pointer;"><span>Наший телеграм (@nzchatuk)</span><span style="color:var(--neon);">→</span></div>
-      <div class="row" onclick="alert('© 2026 NZ_Ukraine • @nzbestinuabot. Усі права захищено. Автор: @Modestyzz')" style="cursor:pointer;"><span>Авторське право</span><span style="color:var(--neon);">©</span></div>
+      <div class="row" onclick="openLink('https://t.me')" style="cursor:pointer;"><span>Наший телеграм (@nzchatuk)</span><span style="color:var(--neon);">→</span></div><div class="row" onclick="alert('© 2026 NZ_Ukraine • @nzbestinuabot. Усі права захищено. Автор: @Modestyzz')" style="cursor:pointer;"><span>Авторське право</span><span style="color:var(--neon);">©</span></div>
       <div class="row" onclick="doLogout()" style="cursor:pointer; color:#ff2a5f;"><span>Вийти з акаунта</span><span>✕</span></div>
     </div>
   </div>
@@ -248,22 +230,47 @@
     var l = document.getElementById('l-inp').value.trim();
     var p = document.getElementById('p-inp').value.trim();
     if (!l || !p) { alert('Введи логін і пароль!'); return; }
-    localStorage.setItem('nz_u', l);
-    showApp(l);
+    var btn = document.querySelector('#login-box .btn');
+    btn.innerText = 'ПІДКЛЮЧЕННЯ ДО NZ.UA...';
+    fetch('https://pythonanywhere.com', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({login: l, password: p})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      btn.innerText = 'УВІЙТИ В ЩОДЕННИК';
+      if (!d.ok) { alert(d.error || 'Невірний логін або пароль'); return; }
+      localStorage.setItem('nz_u', d.name || l);
+      localStorage.setItem('nz_data', JSON.stringify(d));
+      showApp(d.name || l);
+    }).catch(function() {
+      btn.innerText = 'УВІЙТИ В ЩОДЕННИК';
+      localStorage.setItem('nz_u', l);
+      showApp(l);
+    });
   }
 
   function showApp(l) {
     document.getElementById('login-box').style.display = 'none';
     document.getElementById('app-box').style.display = 'block';
-    var name = l;
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      var u = tg.initDataUnsafe.user;
-      if (u.first_name) name = u.first_name;
-      if (u.photo_url) document.getElementById('tg-ava').src = u.photo_url;
+    var savedData = null;
+    try { savedData = JSON.parse(localStorage.getItem('nz_data')); } catch(e) {}
+    var name = (savedData && savedData.name) ? savedData.name : l;
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.photo_url) {
+      document.getElementById('tg-ava').src = tg.initDataUnsafe.user.photo_url;
     }
-    document.getElementById('hello').innerText = 'Привіт, ' + name + '!';
+    var firstName = name.split(' ').length > 1 ? name.split(' ')[1] : name;
+    document.getElementById('hello').innerText = 'Привіт, ' + firstName + '!';
     document.getElementById('p-name').innerText = name;
-    document.getElementById('top-badge').innerText = name.substring(0, 2).toUpperCase();
+    document.getElementById('top-badge').innerText = firstName.substring(0, 2).toUpperCase();
+    if (savedData && savedData.avg) {
+      document.querySelector('.big-num').innerText = savedData.avg;
+    }
+    if (savedData && savedData.lessons && savedData.lessons.length) {
+      var box = document.querySelector('#t-sched .widget');
+      box.innerHTML = savedData.lessons.map(function(x) {
+        return '<div class="row"><div><div>' + x.subject + '</div><div style="font-size:11px;color:#94a3b8;">' + x.time + '</div></div><div style="color:var(--neon);font-size:20px;">' + x.mark + '</div></div>';
+      }).join('');
+    }
   }
 
   function setVipUI(active) {
@@ -318,6 +325,7 @@
 
   function doLogout() {
     localStorage.removeItem('nz_u');
+    localStorage.removeItem('nz_data');
     document.getElementById('app-box').style.display = 'none';
     document.getElementById('login-box').style.display = 'block';
   }
