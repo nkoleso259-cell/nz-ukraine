@@ -242,10 +242,9 @@
       localStorage.setItem('nz_u', d.name || l);
       localStorage.setItem('nz_data', JSON.stringify(d));
       showApp(d.name || l);
-    }).catch(function() {
+}).catch(function() {
       btn.innerText = 'УВІЙТИ В ЩОДЕННИК';
-      localStorage.setItem('nz_u', l);
-      showApp(l);
+      alert('Помилка з\'єднання з сервером NZ.UA');
     });
   }
 
