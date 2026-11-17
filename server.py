@@ -39,11 +39,17 @@ def login_nz():
             "LoginForm[rememberMe]": "1"
         }, headers={"X-Requested-With": "XMLHttpRequest"}, timeout=15).text
 
-        if "Невірне" in res or "Помилка" in res or "loginform" in res.lower():
+        if res.strip() != "[]":
             return jsonify({"ok": False, "error": "Невірний логін або пароль NZ.UA"})
 
         sched = s.get(base + "/schedule/index", timeout=15).text
         diary = s.get(base + "/schedule/diary", timeout=15).text
+
+        if "Увійти до кабінету" in sched:
+            return jsonify({"ok": False, "error": "Сесія NZ.UA не відкрилася"})
+
+        name_m = re.search(r'([А-ЯІЇЄҐ][а-яіїєґ\']+\s+[А-ЯІЇЄҐ][а-яіїєґ\']+\s+[А-ЯІЇЄҐ][а-яіїєґ\']+)', sched)
+        full_name = name_m.group(1) if name_m else u
 
         lines = [l.strip() for l in re.sub(r'<[^>]+>', '\n', sched).split('\n') if len(l.strip()) > 2]
         lessons = []
@@ -54,6 +60,6 @@ def login_nz():
         marks = [int(x) for x in re.findall(r'>([1-9]|1[0-2])<', diary)]
         avg = round(sum(marks) / len(marks), 2) if marks else 9.14
 
-        return jsonify({"ok": True, "name": u, "avg": avg, "lessons": lessons[:8]})
+        return jsonify({"ok": True, "name": full_name, "avg": avg, "lessons": lessons[:8]})
     except Exception as e:
-        return jsonify({"ok": False, "error": str(e)})
+        return jsonify({"ok": False, "error": "Помилка: " + str(e)})
