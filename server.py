@@ -25,14 +25,14 @@ def login_nz():
     if not u or not p:
         return jsonify({"ok": False, "error": "Введи логін і пароль"})
 
+    sl = chr(47)
+    base = "https:" + sl + sl + "nz.ua"
     s = requests.Session()
     s.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
-        "Origin": "https:" + chr(47) + chr(47) + "nz.ua",
-        "Referer": "https:" + chr(47) + chr(47) + "nz.ua" + chr(47)
+        "Origin": base,
+        "Referer": base + sl
     })
-    sl = chr(47)
-    base = "https:" + sl + sl + "nz.ua"
     try:
         page = s.get(base + sl, timeout=15).text
         m = re.search(r'name="_csrf" value="([^"]+)"', page)
@@ -45,7 +45,7 @@ def login_nz():
         }, headers={"X-Requested-With": "XMLHttpRequest"}, timeout=15).text
 
         if res.strip() != "[]":
-            return jsonify({"ok": False, "error": "Невірний логін або пароль NZ.UA"})
+            return jsonify({"ok": False, "error": "NZ відповів: " + res[:140]})
 
         sched = s.get(base + sl + "schedule" + sl + "index", timeout=15).text
         diary = s.get(base + sl + "schedule" + sl + "diary", timeout=15).text
@@ -64,4 +64,4 @@ def login_nz():
 
         return jsonify({"ok": True, "name": full_name, "avg": avg, "lessons": lessons[:8]})
     except Exception as e:
-        return jsonify({"ok": False, "error": "Помилка сервера: " + str(e)})
+        return jsonify({"ok": False, "error": "Помилка: " + str(e)})
