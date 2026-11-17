@@ -178,19 +178,22 @@
     <button id="b-prof" onclick="go('t-prof', this)"><svg class="neon-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>Профіль</button>
   </div>
 </div>
-
 <script>
-  const tg = window.Telegram ? window.Telegram.WebApp : null;
+  var tg = window.Telegram ? window.Telegram.WebApp : null;
   if (tg) { tg.expand(); tg.ready(); }
+
+  setTimeout(function() {
+    var sp = document.getElementById('splash');
+    if (sp) sp.style.display = 'none';
+  }, 1100);
 
   function playBeep(vipMode) {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
       osc.type = vipMode ? 'triangle' : 'sine';
       osc.frequency.setValueAtTime(vipMode ? 520 : 340, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(vipMode ? 780 : 220, ctx.currentTime + 0.09);
       gain.gain.setValueAtTime(0.12, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
       osc.connect(gain); gain.connect(ctx.destination);
@@ -200,25 +203,19 @@
   }
 
   window.onload = function() {
-    setTimeout(() => {
-      const sp = document.getElementById('splash');
-      sp.style.opacity = '0';
-      setTimeout(() => sp.style.display = 'none', 450);
-    }, 1100);
-
-    const months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
-    const d = new Date();
-    document.getElementById('dt').innerText = Сьогодні: ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()};
-
+    var months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+    var d = new Date();
+    var dt = document.getElementById('dt');
+    if (dt) dt.innerText = 'Сьогодні: ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     if (localStorage.getItem('nz_vip') === '1') setVipUI(true);
-    const saved = localStorage.getItem('nz_u');
+    var saved = localStorage.getItem('nz_u');
     if (saved) showApp(saved);
   };
 
   function doLogin() {
     playBeep(document.body.classList.contains('vip'));
-    const l = document.getElementById('l-inp').value.trim();
-    const p = document.getElementById('p-inp').value.trim();
+    var l = document.getElementById('l-inp').value.trim();
+    var p = document.getElementById('p-inp').value.trim();
     if (!l || !p) { alert('Введи логін і пароль!'); return; }
     localStorage.setItem('nz_u', l);
     showApp(l);
@@ -227,13 +224,13 @@
   function showApp(l) {
     document.getElementById('login-box').style.display = 'none';
     document.getElementById('app-box').style.display = 'block';
-    let name = l;
+    var name = l;
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      const u = tg.initDataUnsafe.user;
+      var u = tg.initDataUnsafe.user;
       if (u.first_name) name = u.first_name;
       if (u.photo_url) document.getElementById('tg-ava').src = u.photo_url;
     }
-    document.getElementById('hello').innerText = Привіт, ${name}!;
+    document.getElementById('hello').innerText = 'Привіт, ' + name + '!';
     document.getElementById('p-name').innerText = name;
   }
 
@@ -241,7 +238,7 @@
     if (active) {
       document.body.classList.add('vip');
       document.getElementById('vip-crown').style.display = 'block';
-      document.getElementById('p-status').innerText = 'СТАТУС: VIP АКТИВНИЙ 👑';
+      document.getElementById('p-status').innerText = 'СТАТУС: VIP АКТИВНИЙ';
       document.getElementById('vip-buy-card').style.display = 'none';
     } else {
       document.body.classList.remove('vip');
@@ -253,31 +250,30 @@
 
   function buyVip() {
     playBeep(true);
-    if (confirm('Оплатити 15 ⭐️ Telegram Stars для активації VIP-дизайну?')) {
+    if (confirm('Оплатити 15 зірок Telegram Stars для активації VIP-дизайну?')) {
       localStorage.setItem('nz_vip', '1');
       setVipUI(true);
-      alert('VIP-режим успішно активовано! Нахиліть телефон, щоб перевірити живу воду.');
     }
   }
 
   function splashWater() {
     if (!document.body.classList.contains('vip')) return;
     playBeep(true);
-    const w = document.getElementById('water-wave');
+    var w = document.getElementById('water-wave');
     w.style.transform = 'rotate(6deg) scaleY(1.1)';
-    setTimeout(() => w.style.transform = '', 300);
+    setTimeout(function() { w.style.transform = ''; }, 300);
   }
 
   window.addEventListener('deviceorientation', function(e) {
     if (!document.body.classList.contains('vip') || e.gamma === null) return;
-    const tilt = Math.max(-25, Math.min(25, e.gamma));
-    document.getElementById('water-wave').style.transform = rotate(${tilt * 0.45}deg) translateX(${tilt * 0.6}px);
+    var tilt = Math.max(-25, Math.min(25, e.gamma));
+    document.getElementById('water-wave').style.transform = 'rotate(' + (tilt * 0.45) + 'deg) translateX(' + (tilt * 0.6) + 'px)';
   });
 
   function go(id, btn) {
     playBeep(document.body.classList.contains('vip'));
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
+    document.querySelectorAll('.nav button').forEach(function(x) { x.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
     if (btn) btn.classList.add('active');
   }
