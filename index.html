@@ -232,7 +232,7 @@
     if (!l || !p) { alert('Введи логін і пароль!'); return; }
     var btn = document.querySelector('#login-box .btn');
     btn.innerText = 'ПІДКЛЮЧЕННЯ ДО NZ.UA...';
-    fetch('https://pythonanywhere.com', {
+    fetch('https://nz-ukraine-1.onrender.com/api/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({login: l, password: p})
